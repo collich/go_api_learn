@@ -1,8 +1,7 @@
 package main
 
-import "github.com/collich/go_api_learn/internal/routes"
-
+import "github.com/collich/go_api_learn/internal/controller"
 
 func main() {
-	routes.HandleReqs()
+	controller.HandleReqs()
 }

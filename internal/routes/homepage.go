@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"net/http"
 )
-	
-var Books []Book
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "Home Page Welcome")

@@ -9,6 +9,6 @@ import (
 
 func HandleReqs()  {
 	http.HandleFunc("/", routes.HomePage)
-	http.HandleFunc("/books", routes.GetAllBooks)
+	http.HandleFunc("/books/", routes.GetBooks)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

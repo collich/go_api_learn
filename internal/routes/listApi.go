@@ -3,7 +3,7 @@ package routes
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
+	// "strconv"
 
 	"github.com/collich/go_api_learn/internal/misc"
 )
@@ -17,9 +17,11 @@ type List struct {
 var Lists []List
 
 func GetLists(w http.ResponseWriter, r *http.Request)  {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	var httpStatus string
+	// w.Header().Set("Content-Type", "application/json")
+	// w.WriteHeader(http.StatusOK)
+	// var httpStatus string
+
+	httpStatus := misc.SetApplicationJson(w, "ok")
 
 	Lists = []List{
 		{ID: 1, BorrowerName: "James", Books: Books[0]},
@@ -27,7 +29,7 @@ func GetLists(w http.ResponseWriter, r *http.Request)  {
 		{ID: 3, BorrowerName: "Johnathon", Books: Books[2]},
 	}
 
-	httpStatus = strconv.Itoa(http.StatusAccepted)
+	// httpStatus = strconv.Itoa(http.StatusAccepted)
 
 	misc.StatusOutput(httpStatus, r.URL)
 	

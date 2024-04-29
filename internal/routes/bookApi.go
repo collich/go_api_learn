@@ -56,12 +56,12 @@ func GetBooks(w http.ResponseWriter, r *http.Request) {
 		
 		// Misc Method to do status output
 		misc.StatusOutput(httpStatus, r.URL)
-		} else {
-			httpStatus = strconv.Itoa(http.StatusOK)
-			json.NewEncoder(w).Encode(Books)
+	} else {
+		httpStatus = strconv.Itoa(http.StatusOK)
+		json.NewEncoder(w).Encode(Books)
 
-			// Misc Method to do status output
-			misc.StatusOutput(httpStatus, r.URL)
+		// Misc Method to do status output
+		misc.StatusOutput(httpStatus, r.URL)
 	}
 
 }

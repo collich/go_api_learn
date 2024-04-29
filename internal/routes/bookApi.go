@@ -30,7 +30,6 @@ var Books []Book = []Book{
 }
 
 func GetBooks(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	var httpStatus string
 	idParam := r.URL.Path[len("/books/"):]
 	
@@ -40,11 +39,9 @@ func GetBooks(w http.ResponseWriter, r *http.Request) {
 
 		if idParam_int < 1 || idParam_int > len(Books){
 			errorResponse := ErrorResponse{Message: "Book Not Found"}
-			w.WriteHeader(http.StatusNotFound)
-
-			httpStatus = strconv.Itoa(http.StatusNotFound)
+			httpStatus = misc.SetApplicationJsonHeader(w, "notfound")
 			json.NewEncoder(w).Encode(errorResponse)
-			// Misc Method to do status output
+
 			misc.StatusOutput(httpStatus, r.URL)
 			return
 		}
@@ -52,12 +49,13 @@ func GetBooks(w http.ResponseWriter, r *http.Request) {
 		foundBook := Books[idParam_int - 1]
 		
 		json.NewEncoder(w).Encode(foundBook)		
-		httpStatus = strconv.Itoa(http.StatusOK)
+		httpStatus = misc.SetApplicationJsonHeader(w, "ok")
 		
 		// Misc Method to do status output
 		misc.StatusOutput(httpStatus, r.URL)
 	} else {
-		httpStatus = strconv.Itoa(http.StatusOK)
+
+		httpStatus = misc.SetApplicationJsonHeader(w, "ok")
 		json.NewEncoder(w).Encode(Books)
 
 		// Misc Method to do status output

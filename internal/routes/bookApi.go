@@ -2,10 +2,11 @@ package routes
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/collich/go_api_learn/internal/misc"
 )
 
 type Book struct{
@@ -42,22 +43,25 @@ func GetBooks(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusNotFound)
 
 			httpStatus = strconv.Itoa(http.StatusNotFound)
-
-			fmt.Printf("Status %v: Endpoint hit on %v\n", httpStatus, r.URL)
 			json.NewEncoder(w).Encode(errorResponse)
+			// Misc Method to do status output
+			misc.StatusOutput(httpStatus, r.URL)
 			return
 		}
-
+		
 		foundBook := Books[idParam_int - 1]
-
+		
+		json.NewEncoder(w).Encode(foundBook)		
 		httpStatus = strconv.Itoa(http.StatusOK)
-		fmt.Printf("Status %v: Endpoint hit on %v\n", httpStatus, r.URL)
-		json.NewEncoder(w).Encode(foundBook)
-	} else {
+		
+		// Misc Method to do status output
+		misc.StatusOutput(httpStatus, r.URL)
+		} else {
+			httpStatus = strconv.Itoa(http.StatusOK)
+			json.NewEncoder(w).Encode(Books)
 
-		httpStatus = strconv.Itoa(http.StatusOK)
-		fmt.Printf("Status %v: Endpoint hit on %v\n", httpStatus, r.URL)
-		json.NewEncoder(w).Encode(Books)
+			// Misc Method to do status output
+			misc.StatusOutput(httpStatus, r.URL)
 	}
 
 }

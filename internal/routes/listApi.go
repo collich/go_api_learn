@@ -2,9 +2,10 @@ package routes
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
+
+	"github.com/collich/go_api_learn/internal/misc"
 )
 
 type List struct {
@@ -27,6 +28,8 @@ func GetLists(w http.ResponseWriter, r *http.Request)  {
 	}
 
 	httpStatus = strconv.Itoa(http.StatusAccepted)
-	fmt.Println(httpStatus)
+
+	misc.StatusOutput(httpStatus, r.URL)
+	
 	json.NewEncoder(w).Encode(Lists)
 }

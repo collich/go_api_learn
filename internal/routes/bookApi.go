@@ -25,10 +25,10 @@ func CRUDBooks(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		if idParam != ""{
-			idParam_int, err := strconv.Atoi(idParam)
+			idParamInt, err := strconv.Atoi(idParam)
 			misc.ErrorHandling(err)
 	
-			if idParam_int < 1 || idParam_int > len(Books){
+			if idParamInt < 1 || idParamInt > len(Books){
 				errorResponse := misc.ErrorResponse{Message: "Book Not Found"}
 				httpStatus = misc.SetApplicationJsonHeader(w, "notfound")
 				json.NewEncoder(w).Encode(errorResponse)
@@ -37,7 +37,13 @@ func CRUDBooks(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			
-			foundBook := Books[idParam_int - 1]
+			// foundBook := Books[idParamInt - 1]
+			var foundBook Book
+			for _, i := range Books {
+				if i.ID == int64(idParamInt){
+					foundBook = i
+				}
+			}
 			
 			json.NewEncoder(w).Encode(foundBook)		
 			httpStatus = misc.SetApplicationJsonHeader(w, "ok")

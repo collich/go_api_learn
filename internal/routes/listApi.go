@@ -7,12 +7,6 @@ import (
 	"github.com/collich/go_api_learn/internal/misc"
 )
 
-type List struct {
-	ID int32 `json:"ID"`
-	BorrowerName string `json:"BorrowerName"`
-	Books Book `json:"Books"`
-}
-
 var Lists []List
 
 func GetLists(w http.ResponseWriter, r *http.Request)  {

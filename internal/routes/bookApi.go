@@ -1,27 +1,15 @@
 package routes
 
+// package bookroutes
+
 import (
 	"encoding/json"
-	"log"
+	"io"
 	"net/http"
 	"strconv"
 
 	"github.com/collich/go_api_learn/internal/misc"
 )
-
-type Book struct{
-	ID int64 `json:"ID"`
-	Name string `json:"Name"`
-	Author string `json:"Author"`
-	Desc string `json:"desc"`
-	Summary string `json:"summary"`
-	Price float64 `json:"Price"`
-	BorrowStatus bool `json:"borrowStatus"`
-}
-
-type ErrorResponse struct {
-	Message string `json:"Message"`
-}
 
 var Books []Book = []Book{
 	{ID: 1, Name: "Pirates of the Caribbean", Author: "Johnny Deps", Desc: "American fantasy supernatural swashbuckler film series", Summary: "A pirate that lives their desired lifestyle", Price: 14.99, BorrowStatus: true},
@@ -29,43 +17,68 @@ var Books []Book = []Book{
 	{ID: 3, Name: "Harry Porter", Author: "Harry the Nerd", Desc: "American fantasy super natural best seller novel", Summary: "Will harry marry the ferry?", Price: 29.99, BorrowStatus: true},
 }
 
-func GetBooks(w http.ResponseWriter, r *http.Request) {
+func CRUDBooks(w http.ResponseWriter, r *http.Request) {
 	var httpStatus string
 	idParam := r.URL.Path[len("/books/"):]
 	
-	if idParam != ""{
-		idParam_int, err := strconv.Atoi(idParam)
-		ErrorHandling(err)
 
-		if idParam_int < 1 || idParam_int > len(Books){
-			errorResponse := ErrorResponse{Message: "Book Not Found"}
-			httpStatus = misc.SetApplicationJsonHeader(w, "notfound")
-			json.NewEncoder(w).Encode(errorResponse)
-
+	switch r.Method {
+	case "GET":
+		if idParam != ""{
+			idParam_int, err := strconv.Atoi(idParam)
+			misc.ErrorHandling(err)
+	
+			if idParam_int < 1 || idParam_int > len(Books){
+				errorResponse := misc.ErrorResponse{Message: "Book Not Found"}
+				httpStatus = misc.SetApplicationJsonHeader(w, "notfound")
+				json.NewEncoder(w).Encode(errorResponse)
+	
+				misc.StatusOutput(httpStatus, r.URL)
+				return
+			}
+			
+			foundBook := Books[idParam_int - 1]
+			
+			json.NewEncoder(w).Encode(foundBook)		
+			httpStatus = misc.SetApplicationJsonHeader(w, "ok")
+			
+			// Misc Method to do status output
 			misc.StatusOutput(httpStatus, r.URL)
-			return
-		}
+		} else {
+	
+			httpStatus = misc.SetApplicationJsonHeader(w, "ok")
+			json.NewEncoder(w).Encode(Books)
+	
+			// Misc Method to do status output
+			misc.StatusOutput(httpStatus, r.URL)
+		}	
+	case "POST":
+		var book Book
+		body, err := io.ReadAll(r.Body)
+		misc.ErrorHandling(err)
 		
-		foundBook := Books[idParam_int - 1]
-		
-		json.NewEncoder(w).Encode(foundBook)		
-		httpStatus = misc.SetApplicationJsonHeader(w, "ok")
-		
-		// Misc Method to do status output
-		misc.StatusOutput(httpStatus, r.URL)
-	} else {
+		err = json.Unmarshal(body, &book)
+		misc.ErrorHandling(err)
 
-		httpStatus = misc.SetApplicationJsonHeader(w, "ok")
-		json.NewEncoder(w).Encode(Books)
+		PostBookMutation(&book)
+		Books = append(Books, book)
 
-		// Misc Method to do status output
+		httpStatus = misc.SetApplicationJsonHeader(w, "accept")
+
+		json.NewEncoder(w).Encode(book)
 		misc.StatusOutput(httpStatus, r.URL)
 	}
 
 }
 
-func ErrorHandling(err error) {
-	if err != nil {
-		log.Fatalf("Got Error %v", err)
+func PostBookMutation(book *Book) {
+	*book = Book{
+		ID: int64(len(Books) + 1),
+		Name: book.Name,
+		Author: book.Author,
+		Desc: book.Desc,
+		Summary: book.Summary,
+		Price: book.Price,
+		BorrowStatus: false,
 	}
 }

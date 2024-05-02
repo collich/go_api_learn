@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os/exec"
 	"strconv"
 )
 
@@ -35,3 +36,9 @@ func ErrorHandling(err error) {
 		log.Fatalf("Got Error: %v", err)
 	}
 }
+
+// One time use function that prints out the host when start
+func URLCLIPrintOut(PORT string)  {
+
+}
+

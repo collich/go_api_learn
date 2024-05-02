@@ -8,8 +8,9 @@ import (
 )
 
 func HandleReqs()  {
+	PORT := ":8080"
 	http.HandleFunc("/", routes.HomePage)
 	http.HandleFunc("/books/", routes.CRUDBooks)
 	http.HandleFunc("/lists/", routes.CRUDLists)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(PORT, nil))
 }

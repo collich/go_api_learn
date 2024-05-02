@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/collich/go_api_learn/internal/misc"
+	misc "github.com/collich/go_api_learn/internal/misc"
 )
 
 var Books []Book = []Book{

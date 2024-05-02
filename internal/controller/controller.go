@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/collich/go_api_learn/internal/routes"
+	routes "github.com/collich/go_api_learn/internal/routes"
 )
 
 func HandleReqs()  {

@@ -5,8 +5,10 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	// "os/exec"
+	"os/exec"
+	"regexp"
 	"strconv"
+	"strings"
 )
 
 var statusMap = map[string]int{
@@ -39,10 +41,32 @@ func ErrorHandling(err error) {
 
 // One time use function that prints out the host when start
 func URLCLIPrintOut(PORT string)  {
-	// CMD := exec.Command("hostname", "-i")
-	// Output, err := CMD.Output()
+	var ListOfIP []string
 
+	CMD := exec.Command("hostname", "-i")
+	Output, err := CMD.Output()
+	ErrorHandling(err)
+	
+	r, err := regexp.Compile("")
+	ErrorHandling(err)
+	
+	Results := strings.Split(string(Output), " ")
 
+	for _, i := range Results{
+		if match := r.Match([]byte(i)); match {
+			// fmt.Printf("Site is up:", i, PORT)
+			ListOfIP = append(ListOfIP, i)
+		}
+	}
 
+	if len(ListOfIP) != 0{
+		fmt.Println("Your site is up: ")
+		for _, i := range ListOfIP{
+			fmt.Printf("http://%v%v\n", i,PORT)
+		}
+	} else {
+		fmt.Println("Couldn't find any server")
+		return
+	}
 }
 

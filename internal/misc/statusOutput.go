@@ -47,7 +47,7 @@ func URLCLIPrintOut(PORT string)  {
 	Output, err := CMD.Output()
 	ErrorHandling(err)
 	
-	r, err := regexp.Compile("")
+	r, err := regexp.Compile("192.168.*")
 	ErrorHandling(err)
 	
 	Results := strings.Split(string(Output), " ")

@@ -75,7 +75,28 @@ func CRUDBooks(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(book)
 		misc.StatusOutput(httpStatus, r.URL)
 	case "PATCH":
+		idParams := r.URL.Path[len("/books/"):]
+		idParams_int, err := strconv.Atoi(idParams)
+		misc.ErrorHandling(err)
+		
+		var book Book
+		for k, i := range Books {
+			if i.ID == int64(idParams_int) {
+				body, err := io.ReadAll(r.Body)
+				misc.ErrorHandling(err)
+				
+				err = json.Unmarshal(body, &book)
+				misc.ErrorHandling(err)
 
+				i := PatchBookMutation(book, i)
+				Books[k] = i
+				book = i
+			}
+		}
+
+		httpStatus := misc.SetApplicationJsonHeader(w, "ok")
+		json.NewEncoder(w).Encode(book)
+		misc.StatusOutput(httpStatus, r.URL)
 
 	case "DELETE":
 		idParams := r.URL.Path[len("/books/"):]
@@ -112,4 +133,17 @@ func PostBookMutation(book *Book) {
 		Price: book.Price,
 		BorrowStatus: false,
 	}
+}
+
+func PatchBookMutation(book Book, i Book) Book {
+	i = Book{
+		ID: i.ID,
+		Name: book.Name,
+		Author:book.Author,
+		Desc: book.Desc,
+		Summary: book.Summary,
+		Price: book.Price,
+		BorrowStatus: i.BorrowStatus,
+	}
+	return i
 }

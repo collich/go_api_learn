@@ -74,10 +74,22 @@ func CRUDBooks(w http.ResponseWriter, r *http.Request) {
 
 		json.NewEncoder(w).Encode(book)
 		misc.StatusOutput(httpStatus, r.URL)
+	case "PATCH":
+
+
 	case "DELETE":
 		idParams := r.URL.Path[len("/books/"):]
 		idParams_int, err := strconv.Atoi(idParams)
 		misc.ErrorHandling(err)
+
+		if idParams_int < 1 || idParams_int > len(Books){
+			ErrorResponse := misc.ErrorResponse{Message: "Book not found"}
+			httpStatus := misc.SetApplicationJsonHeader(w, "notfound")
+
+			json.NewEncoder(w).Encode(ErrorResponse)
+			misc.StatusOutput(httpStatus, r.URL)
+			return
+		}
 
 		for i, k := range Books {
 			if k.ID == int64(idParams_int) {

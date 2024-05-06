@@ -4,6 +4,7 @@ package routes
 
 import (
 	"encoding/json"
+	// "fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -73,8 +74,20 @@ func CRUDBooks(w http.ResponseWriter, r *http.Request) {
 
 		json.NewEncoder(w).Encode(book)
 		misc.StatusOutput(httpStatus, r.URL)
-	}
+	case "DELETE":
+		idParams := r.URL.Path[len("/books/"):]
+		idParams_int, err := strconv.Atoi(idParams)
+		misc.ErrorHandling(err)
 
+		for i, k := range Books {
+			if k.ID == int64(idParams_int) {
+				Books = append(Books[:i], Books[i + 1: ]...)
+			}
+		}
+		httpStatus := misc.SetApplicationJsonHeader(w, "ok")
+		json.NewEncoder(w).Encode(Books)
+		misc.StatusOutput(httpStatus, r.URL)
+	}
 }
 
 func PostBookMutation(book *Book) {

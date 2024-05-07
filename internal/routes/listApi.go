@@ -2,6 +2,8 @@ package routes
 
 import (
 	"encoding/json"
+	// "fmt"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -55,8 +57,42 @@ func CRUDLists(w http.ResponseWriter, r *http.Request)  {
 			
 			json.NewEncoder(w).Encode(Lists)
 		}
-	// case "POST":
-	// 	return
+	case "POST":
+		id := len(Lists) + 1
+		var newBody List
+
+		body, err:= io.ReadAll(r.Body)
+		misc.ErrorHandling(err)
+
+		json.Unmarshal(body, &newBody)
+
+		newList := IfBookEmpty(newBody, int32(id))
+
+		Lists = append(Lists, newList)
+
+		httpStatus := misc.SetApplicationJsonHeader(w, "ok")
+		json.NewEncoder(w).Encode(newList)
+
+		misc.StatusOutput(httpStatus, r.URL)
 	}
 
+}
+
+func IfBookEmpty(body List, id int32) List {
+	var newList List
+	if body.Books == (Book{}) {
+		newList = List{
+			ID: int32(id),
+			BorrowerName: body.BorrowerName,
+			Books: Book{},
+		}
+		return newList
+	}
+	
+	newList = List{
+		ID: int32(id),
+		BorrowerName: body.BorrowerName,
+		Books: body.Books,
+	}
+	return newList
 }

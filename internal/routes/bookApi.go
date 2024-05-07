@@ -74,6 +74,7 @@ func CRUDBooks(w http.ResponseWriter, r *http.Request) {
 
 		json.NewEncoder(w).Encode(book)
 		misc.StatusOutput(httpStatus, r.URL)
+	
 	case "PATCH":
 		idParams := r.URL.Path[len("/books/"):]
 		idParams_int, err := strconv.Atoi(idParams)

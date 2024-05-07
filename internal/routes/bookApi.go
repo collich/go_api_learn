@@ -104,7 +104,8 @@ func CRUDBooks(w http.ResponseWriter, r *http.Request) {
 		idParams_int, err := strconv.Atoi(idParams)
 		misc.ErrorHandling(err)
 
-		if idParams_int < 1 || idParams_int > len(Books){
+		// if idParams_int < 1 || idParams_int > len(Books){
+		if idParams_int < 1 {
 			ErrorResponse := misc.ErrorResponse{Message: "Book not found"}
 			httpStatus := misc.SetApplicationJsonHeader(w, "notfound")
 

@@ -17,11 +17,12 @@ var Lists []List = []List{
 }
 
 func CRUDLists(w http.ResponseWriter, r *http.Request)  {
-	switch r.Method {
-	case "GET":
-		var httpStatus string
-		idParam := r.URL.Path[len("/lists/"):]
+	var httpStatus string
+	idParam := r.URL.Path[len("/lists/"):]
 
+	switch r.Method {
+	// Get method
+	case "GET":
 		if idParam != ""{
 			idParamInt, err := strconv.Atoi(idParam)
 			misc.ErrorHandling(err)
@@ -57,8 +58,9 @@ func CRUDLists(w http.ResponseWriter, r *http.Request)  {
 			
 			json.NewEncoder(w).Encode(Lists)
 		}
+	// Post method
 	case "POST":
-		id := len(Lists) + 1
+		id := Lists[len(Lists)-1].ID + 1
 		var newBody List
 
 		body, err:= io.ReadAll(r.Body)
@@ -74,8 +76,34 @@ func CRUDLists(w http.ResponseWriter, r *http.Request)  {
 		json.NewEncoder(w).Encode(newList)
 
 		misc.StatusOutput(httpStatus, r.URL)
-	}
+	// Delete Method
+	case "DELETE":
+		idParam_int, err := strconv.Atoi(idParam)
+		misc.ErrorHandling(err)
 
+		if idParam_int < 1 {
+			ErrorResponse := misc.ErrorResponse{
+				Message: "Book not found",
+			}
+
+			httpStatus = misc.SetApplicationJsonHeader(w, "notfound")
+			json.NewEncoder(w).Encode(ErrorResponse)
+			misc.StatusOutput(httpStatus, r.URL)
+			return
+		}
+
+		for i, k := range Lists {
+			if k.ID == int32(idParam_int) {
+				Lists = append(Lists[:i], Lists[i + 1:]...)
+			}
+		}
+
+		httpStatus = misc.SetApplicationJsonHeader(w, "ok")
+		json.NewEncoder(w).Encode(Lists)
+
+		misc.StatusOutput(httpStatus, r.URL)
+	}
+	
 }
 
 func IfBookEmpty(body List, id int32) List {

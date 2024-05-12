@@ -12,4 +12,9 @@ func Load(filename string) {
 	ErrorHandling(err)
 
 	fileBody := strings.Split(string(fileBodyByte), "\n")
+
+	for _, i := range fileBody {
+		keyValue := strings.Split(i, "=")
+		envMap[keyValue[0]] = keyValue[1]
+	}
 }

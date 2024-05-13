@@ -1,11 +1,14 @@
 package misc
 
 import (
+	"errors"
 	"os"
 	"strings"
 )
 
-var envMap map[interface{}]interface{}
+type envMAP map[string]interface{}
+
+var envMap envMAP
 
 func Load(filename string) {
 	fileBodyByte, err := os.ReadFile(filename)
@@ -15,6 +18,15 @@ func Load(filename string) {
 
 	for _, i := range fileBody {
 		keyValue := strings.Split(i, "=")
-		envMap[keyValue[0]] = keyValue[1]
+		if len(keyValue) == 2 {
+			envMap[keyValue[0]] = keyValue[1]
+		}
 	}
+}
+
+func ( mapper envMAP ) FindENV(key string) (interface{}, error) {
+	if result := mapper[key]; result != nil {
+		return result, nil
+	}
+	return nil, errors.New("key not found")
 }

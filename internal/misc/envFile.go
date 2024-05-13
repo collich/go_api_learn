@@ -8,7 +8,7 @@ import (
 
 type envMAP map[string]interface{}
 
-var envMap envMAP
+var envMapInstance envMAP = Initialise()
 
 func Load(filename string) {
 	fileBodyByte, err := os.ReadFile(filename)
@@ -19,7 +19,7 @@ func Load(filename string) {
 	for _, i := range fileBody {
 		keyValue := strings.Split(i, "=")
 		if len(keyValue) == 2 {
-			envMap[keyValue[0]] = keyValue[1]
+			envMapInstance[keyValue[0]] = keyValue[1]
 		}
 	}
 }
@@ -29,4 +29,8 @@ func ( mapper envMAP ) FindENV(key string) (interface{}, error) {
 		return result, nil
 	}
 	return nil, errors.New("key not found")
+}
+
+func Initialise() envMAP{
+	return make(envMAP)
 }
